@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mongodb-tramites:
+    image: mongo:7.0
+    container_name: mongodb-tramites
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: tramites_db
+    volumes:
+      - mongodb_tramites_data:/data/db
+    networks:
+      - tramites-network
+
+volumes:
+  mongodb_tramites_data:
+    driver: local
+
+networks:
+  tramites-network:
+    driver: bridge

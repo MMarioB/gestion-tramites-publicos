@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: tramites-service
+  
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: tramites_db
+      auto-index-creation: true
+
+server:
+  port: 8081
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.gestiontramites: DEBUG
+    org.springframework.data.mongodb: DEBUG
