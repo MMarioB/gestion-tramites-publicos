@@ -19,14 +19,14 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Runtime - Imagen final ligera
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre
 
 # Metadata
 LABEL maintainer="mario@example.com"
 LABEL description="Tramites Service - Sistema de Gestión de Trámites"
 
 # Crear usuario no-root para seguridad
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 
 # Directorio de trabajo
 WORKDIR /app
@@ -50,5 +50,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 # Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
-# Opciones de JVM
+# Opciones de JVM (puedes ajustarlas)
 CMD ["-Xms256m", "-Xmx512m"]
