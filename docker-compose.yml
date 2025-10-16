@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Base de datos MongoDB
   mongodb-tramites:
     image: mongo:7.0
     container_name: mongodb-tramites
@@ -12,6 +13,40 @@ services:
       - mongodb_tramites_data:/data/db
     networks:
       - tramites-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservicio tramites-service
+  tramites-service:
+    build:
+      context: ./tramites-service
+      dockerfile: Dockerfile
+    container_name: tramites-service
+    ports:
+      - "8081:8081"
+    environment:
+      # Configuración de MongoDB
+      SPRING_DATA_MONGODB_HOST: mongodb-tramites
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: tramites_db
+      # Otras configuraciones
+      SERVER_PORT: 8081
+      LOGGING_LEVEL_COM_GESTIONTRAMITES: DEBUG
+    depends_on:
+      mongodb-tramites:
+        condition: service_healthy
+    networks:
+      - tramites-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
 
 volumes:
   mongodb_tramites_data:
