@@ -47,11 +47,22 @@ Gestión completa de trámites con estados, validaciones y auditoría.
 - Validaciones de entrada
 - Manejo de excepciones centralizado
 
-### 🚧 usuarios-service [TODO]
+### ✅ usuarios-service
 **Puerto:** 8082  
-**Base de datos:** PostgreSQL
+**Base de datos:** PostgreSQL  
+**Estado:** ✅ Completado
 
-Gestión de usuarios (ciudadanos y funcionarios).
+Gestión de usuarios del sistema con dos tipos: ciudadanos y funcionarios.
+
+**Funcionalidades:**
+- CRUD completo de usuarios
+- Gestión de direcciones (relación OneToOne)
+- Validaciones de DNI, email y teléfono
+- Búsqueda por nombre/apellidos
+- Filtrado por tipo y estado activo
+- Soft delete (activar/desactivar)
+- Auditoría automática
+- Manejo de excepciones centralizado
 
 ### 🚧 notificaciones-service [TODO]
 **Puerto:** 8083  
@@ -214,6 +225,22 @@ curl http://localhost:8081/api/tramites
 curl -X PATCH "http://localhost:8081/api/tramites/{ID}/estado?nuevoEstado=ENVIADO"
 ```
 
+### usuarios-service (http://localhost:8082)
+
+| Método | Endpoint                        | Descripción                 |
+|--------|---------------------------------|-----------------------------|
+| POST   | `/api/usuarios`                 | Crear nuevo usuario         |
+| GET    | `/api/usuarios`                 | Listar todos los usuarios   |
+| GET    | `/api/usuarios?tipo=CIUDADANO`  | Filtrar por tipo            |
+| GET    | `/api/usuarios?activo=true`     | Filtrar por activos         |
+| GET    | `/api/usuarios/{id}`            | Obtener usuario por ID      |
+| GET    | `/api/usuarios/dni/{dni}`       | Obtener usuario por DNI     |
+| GET    | `/api/usuarios/buscar?q=texto`  | Buscar por nombre/apellidos |
+| PUT    | `/api/usuarios/{id}`            | Actualizar usuario          |
+| PATCH  | `/api/usuarios/{id}/activar`    | Activar usuario             |
+| PATCH  | `/api/usuarios/{id}/desactivar` | Desactivar usuario          |
+| DELETE | `/api/usuarios/{id}`            | Eliminar usuario            |
+
 ## 🧪 Testing
 ```bash
 cd tramites-service
@@ -258,8 +285,27 @@ gestion-tramites-publicos/
 │   │   │   └── resources/
 │   │   │       └── application.yml # Configuración
 │   │   └── test/
-│   └── pom.xml
-├── usuarios-service/ [TODO]
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── pom.xml
+│   └── README.md
+├── usuarios-service/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/gestiontramites/usuarios/
+│   │   │   │   ├── controller/     # Controllers REST
+│   │   │   │   ├── service/        # Lógica de negocio
+│   │   │   │   ├── repository/     # Acceso a datos (JPA)
+│   │   │   │   ├── model/          # Entidades JPA
+│   │   │   │   ├── dto/            # DTOs
+│   │   │   │   └── exception/      # Manejo de excepciones
+│   │   │   └── resources/
+│   │   │       └── application.yml # Configuración
+│   │   └── test/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── pom.xml
+│   └── README.md
 ├── notificaciones-service/ [TODO]
 ├── documentos-service/ [TODO]
 ├── api-gateway/ [TODO]
@@ -267,6 +313,7 @@ gestion-tramites-publicos/
 │   ├── docker/
 │   └── kubernetes/ [TODO]
 ├── docker-compose.yml
+├── .gitignore
 └── README.md
 ```
 
@@ -274,10 +321,11 @@ gestion-tramites-publicos/
 
 ### Fase 1: Microservicios Base ✅
 - [x] tramites-service con MongoDB
-- [x] CRUD completo
+- [x] usuarios-service con PostgreSQL
+- [x] Dockerización completa
+- [x] CRUD completo en ambos
 - [x] Validaciones y excepciones
 - [x] Swagger/OpenAPI
-- [ ] usuarios-service con PostgreSQL
 - [ ] documentos-service
 
 ### Fase 2: Integración 🚧

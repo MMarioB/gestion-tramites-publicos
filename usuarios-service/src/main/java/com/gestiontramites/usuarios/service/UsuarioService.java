@@ -1,6 +1,7 @@
 package com.gestiontramites.usuarios.service;
 
 import com.gestiontramites.usuarios.dto.*;
+import com.gestiontramites.usuarios.exception.UsuarioNotFoundException;
 import com.gestiontramites.usuarios.model.Direccion;
 import com.gestiontramites.usuarios.model.TipoUsuario;
 import com.gestiontramites.usuarios.model.Usuario;
@@ -88,7 +89,7 @@ public class UsuarioService {
         log.info("Buscando usuario con ID: {}", id);
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
 
         return mapToResponse(usuario);
     }
@@ -100,7 +101,7 @@ public class UsuarioService {
         log.info("Buscando usuario con DNI: {}", dni);
 
         Usuario usuario = usuarioRepository.findByDni(dni)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con DNI: " + dni));
+                .orElseThrow(() -> new UsuarioNotFoundException(dni));
 
         return mapToResponse(usuario);
     }
@@ -149,7 +150,7 @@ public class UsuarioService {
         log.info("Actualizando usuario con ID: {}", id);
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
 
         // Validar DNI si cambió
         if (!usuario.getDni().equals(request.getDni())) {
@@ -199,7 +200,7 @@ public class UsuarioService {
         log.info("Cambiando estado activo del usuario {} a {}", id, activo);
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
 
         usuario.setActivo(activo);
 
@@ -218,7 +219,7 @@ public class UsuarioService {
         log.info("Eliminando usuario con ID: {}", id);
 
         if (!usuarioRepository.existsById(id)) {
-            throw new RuntimeException("Usuario no encontrado con ID: " + id);
+            throw new UsuarioNotFoundException(id);
         }
 
         usuarioRepository.deleteById(id);
