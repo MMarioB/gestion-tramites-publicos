@@ -1,6 +1,7 @@
 package com.gestiontramites.tramites.service;
 
 import com.gestiontramites.tramites.dto.TramiteRequest;
+import com.gestiontramites.tramites.client.UsuariosServiceClient;
 import com.gestiontramites.tramites.dto.TramiteResponse;
 import com.gestiontramites.tramites.model.EstadoTramite;
 import com.gestiontramites.tramites.model.Tramite;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TramiteService {
     private final TramiteRepository tramiteRepository;
+    private final UsuariosServiceClient usuariosServiceClient;
 
     /**
      * Crear un nuevo trámite
@@ -27,6 +29,11 @@ public class TramiteService {
     @Transactional
     public TramiteResponse crearTramite(TramiteRequest request) {
         log.info("Creando nuevo trámite con título: {}", request.getTitulo());
+
+        if (!usuariosServiceClient.existeUsuario(request.getSolicitanteId())) {
+            throw new RuntimeException("El usuario con ID " + request.getSolicitanteId() + " no existe");
+        }
+
         Tramite tramite = Tramite.builder()
                 .titulo(request.getTitulo())
                 .descripcion(request.getDescripcion())

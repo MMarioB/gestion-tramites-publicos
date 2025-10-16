@@ -31,3 +31,7 @@ logging:
   level:
     com.gestiontramites: DEBUG
     org.springframework.data.mongodb: DEBUG
+
+microservicios:
+  usuarios-service:
+    url: http://localhost:8082
